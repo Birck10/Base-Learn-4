@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ArraysExercise {
+    // Storage variables
+    uint[] public numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    address[] public senders;
+    uint[] public timestamps;
+
+    // Return the entire 'numbers' array
+    function getNumbers() public view returns (uint[] memory) {
+        return numbers;
+    }
+
+    // Reset the 'numbers' array to its initial value
+    function resetNumbers() public {
+        delete numbers; // Clear the array
+        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    }
+
+    // Append to the existing 'numbers' array
+    function appendToNumbers(uint[] calldata _toAppend) public {
+        for (uint i = 0; i < _toAppend.length; i++) {
+            numbers.push(_toAppend[i]);
+        }
+    }
+
+    // Save the sender's address and a Unix timestamp
+    function saveTimestamp(uint _unixTimestamp) public {
+        senders.push(msg.sender);
+        timestamps.push(_unixTimestamp);
+    }
+
+    // Filter timestamps and corresponding senders after January 1, 2000 (Unix timestamp: 946702800)
+    function afterY2K() public view returns (uint[] memory, address[] memory) {
+        uint count = 0;
+
+        // First, count how many timestamps are after Y2K
+        for (uint i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] > 946702800) {
+                count++;
+            }
+        }
+
+        // Create new arrays with the appropriate size
+        uint[] memory filteredTimestamps = new uint[](count);
+        address[] memory filteredSenders = new address[](count);
+
+        uint index = 0;
+
+        // Populate the filtered arrays
+        for (uint i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] > 946702800) {
+                filteredTimestamps[index] = timestamps[i];
+                filteredSenders[index] = senders[i];
+                index++;
+            }
+        }
+
+        return (filteredTimestamps, filteredSenders);
+    }
+
+    // Reset the 'senders' array
+    function resetSenders() public {
+        delete senders;
+    }
+
+    // Reset the 'timestamps' array
+    function resetTimestamps() public {
+        delete timestamps;
+    }
+}
